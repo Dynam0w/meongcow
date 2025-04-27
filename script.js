@@ -26,25 +26,25 @@ document.addEventListener('DOMContentLoaded', () => {
             muted: true,
             playsinline: true
         });
-        
+
         // Set initial volume to 0 due to autoplay restrictions
         player.setVolume(0);
-        
+
         // Force playsinline attribute for mobile devices
         player.element.setAttribute('playsinline', '');
         player.element.setAttribute('webkit-playsinline', '');
         player.element.setAttribute('muted', 'muted');
-        
+
         // Additional attributes for better mobile support
         if (iframe.parentNode) {
             iframe.parentNode.style.transform = 'translateZ(0)'; // Hardware acceleration
         }
-        
+
         // Disable autopause to keep playing when tab is not active
         player.setAutopause(false).catch(error => {
             console.error("Error setting autopause:", error);
         });
-        
+
         // Explicitly pause the player to ensure it doesn't autoplay
         player.pause().catch(error => {
             console.error("Error pausing video:", error);
@@ -58,40 +58,66 @@ document.addEventListener('DOMContentLoaded', () => {
     // Function to update view count
     function updateViewCount() {
         const counterElement = document.getElementById('hit-count');
-        
+
         if (!counterElement) {
-          console.error("Counter element not found");
-          return;
+            console.error("Counter element not found");
+            return;
         }
-        
+
         counterElement.innerHTML = '';
-        
+
+        // Create a container for better control
+        const container = document.createElement('div');
+        container.style.display = 'flex';
+        container.style.alignItems = 'center';
+
+        // Create and configure the image
         const viewCounterImg = document.createElement('img');
         viewCounterImg.src = "https://views-counter.vercel.app/badge?pageId=exerlie%2Exyz&leftColor=000000&rightColor=000000&type=total&label=%F0%9F%91%81&style=none";
         viewCounterImg.alt = "views";
         viewCounterImg.style.display = "block";
         viewCounterImg.style.maxWidth = "100%";
-        viewCounterImg.style.height = "auto";
-        
-        // Add specific styles for mobile visibility
+
+        // Mobile-specific styling
         if (isMobileDevice()) {
-          viewCounterImg.style.display = "inline-block !important";
-          viewCounterImg.style.visibility = "visible !important";
-          viewCounterImg.style.opacity = "1 !important";
+            viewCounterImg.style.height = "20px";
+            viewCounterImg.style.display = "inline-block";
+            viewCounterImg.style.visibility = "visible";
+            viewCounterImg.style.opacity = "1";
+
+            // Force parent elements to be visible
+            counterElement.style.display = "block";
+            counterElement.style.visibility = "visible";
+            counterElement.style.opacity = "1";
+
+            document.querySelector('.view-counter').style.display = "flex";
+            document.querySelector('.view-counter').style.visibility = "visible";
+            document.querySelector('.view-counter').style.opacity = "1";
         }
-        
-        counterElement.appendChild(viewCounterImg);
-        
-        // Force visibility after a short delay (helps with some rendering issues)
+
+        container.appendChild(viewCounterImg);
+        counterElement.appendChild(container);
+
+        // Force a refresh of the counter after a short delay
         setTimeout(() => {
-          const viewCounter = document.querySelector('.view-counter');
-          if (viewCounter) {
-            viewCounter.style.display = 'flex';
-            viewCounter.style.visibility = 'visible';
-            viewCounter.style.opacity = '1';
-          }
-        }, 1000);
-      }
+            if (viewCounterImg.complete) {
+                // Image already loaded, make sure it's visible
+                forceVisibility();
+            } else {
+                // Wait for image to load then make visible
+                viewCounterImg.onload = forceVisibility;
+            }
+        }, 500);
+
+        function forceVisibility() {
+            viewCounterImg.style.display = "inline-block";
+            viewCounterImg.style.visibility = "visible";
+            viewCounterImg.style.opacity = "1";
+            container.style.display = "flex";
+            counterElement.style.display = "block";
+            document.querySelector('.view-counter').style.display = "flex";
+        }
+    }
 
     // Check if on mobile device
     function isMobileDevice() {
@@ -105,12 +131,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Special handler for mobile devices
     if (isMobileDevice()) {
-        document.addEventListener('touchstart', function() {
+        document.addEventListener('touchstart', function () {
             if (landingPage.classList.contains('hidden')) {
                 player.play().catch(error => {
                     console.error("Error playing video on mobile:", error);
                 });
-                
+
                 // Try to enable audio after user interaction on mobile
                 setTimeout(() => {
                     if (!userHasSetVolume) {
@@ -130,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
         volumeSlider.addEventListener('input', (e) => {
             const value = parseFloat(e.target.value);
             userHasSetVolume = true;
-            
+
             // Set volume using Vimeo API
             player.setVolume(value).then(() => {
                 // Update icon based on volume level
@@ -145,7 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error("Error setting volume:", error);
             });
         });
-        
+
         // Add touch events specifically for mobile
         volumeSlider.addEventListener('touchend', (e) => {
             const value = parseFloat(e.target.value);
@@ -180,13 +206,13 @@ document.addEventListener('DOMContentLoaded', () => {
     landingPage.addEventListener('click', () => {
         // Start transition
         landingPage.style.opacity = '0';
-        
+
         // After fade out, hide landing page, show content, and start playing video
         setTimeout(() => {
             landingPage.classList.add('hidden');
             contentPage.classList.remove('hidden');
             contentPage.style.opacity = '1';
-            
+
             // Now play the video after user interaction
             document.querySelector('.video-background').classList.add('active');
             player.play().then(() => {
@@ -203,12 +229,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }).catch(error => {
                 console.error("Error playing video after landing page:", error);
             });
-            
+
             // Activate fade-up elements with delay
             fadeElements.forEach((element, index) => {
                 setTimeout(() => {
                     element.classList.add('active');
-                    
+
                     // Start typing effect after the h2 element fades in
                     if (index === 1) {
                         setTimeout(() => {
@@ -244,82 +270,82 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-// Improved visibilitychange handler for mobile devices
-document.addEventListener('visibilitychange', function () {
-    // Only handle if we're past the landing page
-    if (landingPage.classList.contains('hidden')) {
-        if (document.visibilityState === 'visible') {
-            // When tab becomes visible again, ensure video is playing
-            player.getPaused().then(paused => {
-                if (paused) {
-                    player.play().then(() => {
-                        // Restore volume setting based on user preference
-                        const volumeValue = parseFloat(volumeSlider.value);
-                        player.setVolume(volumeValue);
-                    }).catch(error => {
-                        console.error("Error resuming video:", error);
-                        // Try again with a delay as a fallback
-                        setTimeout(() => {
-                            player.play().catch(e => console.error("Retry failed:", e));
-                        }, 1000);
+    // Improved visibilitychange handler for mobile devices
+    document.addEventListener('visibilitychange', function () {
+        // Only handle if we're past the landing page
+        if (landingPage.classList.contains('hidden')) {
+            if (document.visibilityState === 'visible') {
+                // When tab becomes visible again, ensure video is playing
+                player.getPaused().then(paused => {
+                    if (paused) {
+                        player.play().then(() => {
+                            // Restore volume setting based on user preference
+                            const volumeValue = parseFloat(volumeSlider.value);
+                            player.setVolume(volumeValue);
+                        }).catch(error => {
+                            console.error("Error resuming video:", error);
+                            // Try again with a delay as a fallback
+                            setTimeout(() => {
+                                player.play().catch(e => console.error("Retry failed:", e));
+                            }, 1000);
+                        });
+                    }
+                });
+            } else {
+                // When tab becomes hidden, set a flag to check if we need to resume later
+                window.wasBackgrounded = true;
+            }
+        }
+    });
+
+    // Add this function to handle mobile app switching
+    function setupMobileAppSwitchHandling() {
+        if (isMobileDevice()) {
+            // For iOS devices
+            window.addEventListener('pagehide', function () {
+                window.wasBackgrounded = true;
+            });
+
+            window.addEventListener('pageshow', function () {
+                if (window.wasBackgrounded && landingPage.classList.contains('hidden')) {
+                    player.getPaused().then(paused => {
+                        if (paused) {
+                            player.play().catch(error => {
+                                console.error("Error resuming after pageshow:", error);
+                            });
+                        }
+                    });
+                    window.wasBackgrounded = false;
+                }
+            });
+
+            // For Android devices
+            document.addEventListener('resume', function () {
+                if (landingPage.classList.contains('hidden')) {
+                    player.getPaused().then(paused => {
+                        if (paused) {
+                            player.play().catch(error => {
+                                console.error("Error resuming after resume event:", error);
+                            });
+                        }
                     });
                 }
             });
-        } else {
-            // When tab becomes hidden, set a flag to check if we need to resume later
-            window.wasBackgrounded = true;
+
+            // Create a heartbeat to check video status periodically
+            setInterval(function () {
+                if (landingPage.classList.contains('hidden')) {
+                    player.getPaused().then(paused => {
+                        if (paused && document.visibilityState === 'visible') {
+                            player.play().catch(error => {
+                                console.error("Error resuming from heartbeat:", error);
+                            });
+                        }
+                    });
+                }
+            }, 5000); // Check every 5 seconds
         }
     }
-});
-
-// Add this function to handle mobile app switching
-function setupMobileAppSwitchHandling() {
-    if (isMobileDevice()) {
-        // For iOS devices
-        window.addEventListener('pagehide', function() {
-            window.wasBackgrounded = true;
-        });
-        
-        window.addEventListener('pageshow', function() {
-            if (window.wasBackgrounded && landingPage.classList.contains('hidden')) {
-                player.getPaused().then(paused => {
-                    if (paused) {
-                        player.play().catch(error => {
-                            console.error("Error resuming after pageshow:", error);
-                        });
-                    }
-                });
-                window.wasBackgrounded = false;
-            }
-        });
-        
-        // For Android devices
-        document.addEventListener('resume', function() {
-            if (landingPage.classList.contains('hidden')) {
-                player.getPaused().then(paused => {
-                    if (paused) {
-                        player.play().catch(error => {
-                            console.error("Error resuming after resume event:", error);
-                        });
-                    }
-                });
-            }
-        });
-        
-        // Create a heartbeat to check video status periodically
-        setInterval(function() {
-            if (landingPage.classList.contains('hidden')) {
-                player.getPaused().then(paused => {
-                    if (paused && document.visibilityState === 'visible') {
-                        player.play().catch(error => {
-                            console.error("Error resuming from heartbeat:", error);
-                        });
-                    }
-                });
-            }
-        }, 5000); // Check every 5 seconds
-    }
-}
 
     // Disable right-click
     document.addEventListener('contextmenu', event => event.preventDefault());
@@ -330,10 +356,10 @@ function setupMobileAppSwitchHandling() {
         let currentIndex = 0;
         let charIndex = 0;
         let isDeleting = false;
-        
+
         function type() {
             const currentTitle = titles[currentIndex];
-            
+
             if (isDeleting) {
                 // Deleting text
                 charIndex--;
@@ -343,10 +369,10 @@ function setupMobileAppSwitchHandling() {
                 charIndex++;
                 document.title = currentTitle.substring(0, charIndex);
             }
-            
+
             // Typing speed
             let typeSpeed = isDeleting ? 150 : 200;
-            
+
             // If complete word
             if (!isDeleting && charIndex >= currentTitle.length) {
                 // Pause at end of word
@@ -360,10 +386,10 @@ function setupMobileAppSwitchHandling() {
                 // Pause before typing next word
                 typeSpeed = 200;
             }
-            
+
             setTimeout(type, typeSpeed);
         }
-        
+
         // Start the typing effect
         type();
     }
