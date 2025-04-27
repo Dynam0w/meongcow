@@ -59,24 +59,39 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateViewCount() {
         const counterElement = document.getElementById('hit-count');
         
-        // Check if counter element exists
         if (!counterElement) {
-            console.error("Counter element not found");
-            return;
+          console.error("Counter element not found");
+          return;
         }
         
-        // Clear any existing content
         counterElement.innerHTML = '';
         
-        // Create and append the Vercel views counter image
         const viewCounterImg = document.createElement('img');
         viewCounterImg.src = "https://views-counter.vercel.app/badge?pageId=exerlie%2Exyz&leftColor=000000&rightColor=000000&type=total&label=%F0%9F%91%81&style=none";
         viewCounterImg.alt = "views";
-        viewCounterImg.style.display = "block"; // Ensure it's displayed as block
-        viewCounterImg.style.maxWidth = "100%"; // Make sure it's responsive
+        viewCounterImg.style.display = "block";
+        viewCounterImg.style.maxWidth = "100%";
+        viewCounterImg.style.height = "auto";
+        
+        // Add specific styles for mobile visibility
+        if (isMobileDevice()) {
+          viewCounterImg.style.display = "inline-block !important";
+          viewCounterImg.style.visibility = "visible !important";
+          viewCounterImg.style.opacity = "1 !important";
+        }
         
         counterElement.appendChild(viewCounterImg);
-    }
+        
+        // Force visibility after a short delay (helps with some rendering issues)
+        setTimeout(() => {
+          const viewCounter = document.querySelector('.view-counter');
+          if (viewCounter) {
+            viewCounter.style.display = 'flex';
+            viewCounter.style.visibility = 'visible';
+            viewCounter.style.opacity = '1';
+          }
+        }, 1000);
+      }
 
     // Check if on mobile device
     function isMobileDevice() {
