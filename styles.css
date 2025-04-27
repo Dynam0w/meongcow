@@ -263,41 +263,44 @@ h2 {
     position: fixed;
     bottom: 34px;
     left: 20px;
-    display: flex;
+    display: flex !important;
     align-items: center;
     font-size: 0.8rem;
     color: white;
     background-color: rgb(0, 0, 0);
     padding: 1.7px 3.7px;
     border-radius: 50px;
-    z-index: 100; /* Increased z-index to ensure visibility */
+    z-index: 999 !important; /* Higher z-index to ensure visibility */
     visibility: visible !important;
     opacity: 1 !important;
-    pointer-events: auto !important; /* Ensure it's interactive */
+    pointer-events: auto !important;
   }
   
   @media (max-width: 767px) {
     .view-counter {
       background-color: rgb(0, 0, 0) !important;
       padding: 2px 4px;
-      bottom: 20px; /* Adjusted position */
+      bottom: 20px;
       left: 15px;
-      z-index: 1000; /* Even higher z-index for mobile */
-      display: flex !important; /* Force display */
+      display: flex !important;
+      z-index: 9999 !important; /* Even higher for mobile */
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+    
+    #hit-count {
+      display: block !important;
+      visibility: visible !important;
     }
     
     #hit-count img {
-      display: inline-block !important;
+      display: inline-block !important; /* Correct value instead of 'visible' */
       width: auto !important;
-      height: 20px !important; /* Fixed height */
+      height: 20px !important; /* Fixed height for better visibility */
       visibility: visible !important;
       opacity: 1 !important;
     }
   }
-
-#hit-count {
-    font-weight: normal;
-}
 
 /* Fade-up animation for elements */
 .fade-up {
