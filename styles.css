@@ -270,26 +270,30 @@ h2 {
     background-color: rgb(0, 0, 0);
     padding: 1.7px 3.7px;
     border-radius: 50px;
-    z-index: 10;
+    z-index: 100; /* Increased z-index to ensure visibility */
     visibility: visible !important;
     opacity: 1 !important;
-}
-
-/* Adjust view counter for mobile */
-@media (max-width: 767px) {
+    pointer-events: auto !important; /* Ensure it's interactive */
+  }
+  
+  @media (max-width: 767px) {
     .view-counter {
-        background-color: rgb(0, 0, 0) !important;
-        padding: 2px 4px;
-        bottom: 30px;
-        left: 20px;
+      background-color: rgb(0, 0, 0) !important;
+      padding: 2px 4px;
+      bottom: 20px; /* Adjusted position */
+      left: 15px;
+      z-index: 1000; /* Even higher z-index for mobile */
+      display: flex !important; /* Force display */
     }
     
     #hit-count img {
-        display: visible !important;
-        width: auto !important;
-        height: auto !important;
+      display: inline-block !important;
+      width: auto !important;
+      height: 20px !important; /* Fixed height */
+      visibility: visible !important;
+      opacity: 1 !important;
     }
-}
+  }
 
 #hit-count {
     font-weight: normal;
