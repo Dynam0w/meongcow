@@ -20,7 +20,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize Vimeo player
     function initializePlayer() {
         const iframe = document.getElementById('background-video');
-        player = new Vimeo.Player(iframe);
+        player = new Vimeo.Player(iframe, {
+            background: true,
+            autopause: false,
+            muted: true,
+            playsinline: true
+        });
         
         // Set initial volume to 0 due to autoplay restrictions
         player.setVolume(0);
@@ -28,9 +33,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // Force playsinline attribute for mobile devices
         player.element.setAttribute('playsinline', '');
         player.element.setAttribute('webkit-playsinline', '');
-        
-        // Add mobile-specific attributes
         player.element.setAttribute('muted', 'muted');
+        
+        // Additional attributes for better mobile support
+        if (iframe.parentNode) {
+            iframe.parentNode.style.transform = 'translateZ(0)'; // Hardware acceleration
+        }
         
         // Disable autopause to keep playing when tab is not active
         player.setAutopause(false).catch(error => {
@@ -45,6 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize player
     initializePlayer();
+    setupMobileAppSwitchHandling();
 
     // Function to update view count
     function updateViewCount() {
@@ -220,23 +229,82 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Modified visibilitychange handler to keep playing when tab is not active
-    document.addEventListener('visibilitychange', function () {
-        // Only handle if we're past the landing page
-        if (landingPage.classList.contains('hidden')) {
-            if (document.visibilityState === 'visible') {
-                // When tab becomes visible again, ensure video is playing
-                player.play().then(() => {
-                    // Restore volume setting based on user preference
-                    const volumeValue = parseFloat(volumeSlider.value);
-                    player.setVolume(volumeValue);
-                }).catch(error => {
-                    console.error("Error resuming video:", error);
+// Improved visibilitychange handler for mobile devices
+document.addEventListener('visibilitychange', function () {
+    // Only handle if we're past the landing page
+    if (landingPage.classList.contains('hidden')) {
+        if (document.visibilityState === 'visible') {
+            // When tab becomes visible again, ensure video is playing
+            player.getPaused().then(paused => {
+                if (paused) {
+                    player.play().then(() => {
+                        // Restore volume setting based on user preference
+                        const volumeValue = parseFloat(volumeSlider.value);
+                        player.setVolume(volumeValue);
+                    }).catch(error => {
+                        console.error("Error resuming video:", error);
+                        // Try again with a delay as a fallback
+                        setTimeout(() => {
+                            player.play().catch(e => console.error("Retry failed:", e));
+                        }, 1000);
+                    });
+                }
+            });
+        } else {
+            // When tab becomes hidden, set a flag to check if we need to resume later
+            window.wasBackgrounded = true;
+        }
+    }
+});
+
+// Add this function to handle mobile app switching
+function setupMobileAppSwitchHandling() {
+    if (isMobileDevice()) {
+        // For iOS devices
+        window.addEventListener('pagehide', function() {
+            window.wasBackgrounded = true;
+        });
+        
+        window.addEventListener('pageshow', function() {
+            if (window.wasBackgrounded && landingPage.classList.contains('hidden')) {
+                player.getPaused().then(paused => {
+                    if (paused) {
+                        player.play().catch(error => {
+                            console.error("Error resuming after pageshow:", error);
+                        });
+                    }
+                });
+                window.wasBackgrounded = false;
+            }
+        });
+        
+        // For Android devices
+        document.addEventListener('resume', function() {
+            if (landingPage.classList.contains('hidden')) {
+                player.getPaused().then(paused => {
+                    if (paused) {
+                        player.play().catch(error => {
+                            console.error("Error resuming after resume event:", error);
+                        });
+                    }
                 });
             }
-            // Don't pause when tab becomes hidden
-        }
-    });
+        });
+        
+        // Create a heartbeat to check video status periodically
+        setInterval(function() {
+            if (landingPage.classList.contains('hidden')) {
+                player.getPaused().then(paused => {
+                    if (paused && document.visibilityState === 'visible') {
+                        player.play().catch(error => {
+                            console.error("Error resuming from heartbeat:", error);
+                        });
+                    }
+                });
+            }
+        }, 5000); // Check every 5 seconds
+    }
+}
 
     // Disable right-click
     document.addEventListener('contextmenu', event => event.preventDefault());
