@@ -285,7 +285,7 @@ h2 {
     }
     
     #hit-count img {
-        display: block !important;
+        display: visible !important;
         width: auto !important;
         height: auto !important;
     }
