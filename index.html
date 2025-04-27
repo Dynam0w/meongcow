@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <meta property="og:title" content="@cursive" />
+    <meta property="og:description" content="sexy asf website" />
+    <meta property="og:url" content="https://cursive.lol/" />
+    <meta property="og:image" content="https://i.imgur.com/Rh1qNn7.png" />
+    <meta property="og:color" content="#000000" />
+    <script src="https://player.vimeo.com/api/player.js"></script>
+    <script disable-devtool-auto src='https://cdn.jsdelivr.net/npm/disable-devtool'></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@cursive</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <!-- Typed.js for auto-typing effect -->
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+</head>
+<body>
+    <div id="landing-page">
+        <div class="enter-text">click to enter...</div>
+    </div>
+
+    <div id="content-page" class="hidden">
+        <!-- Video Background -->
+        <div class="video-background">
+            <iframe id="background-video"
+                    src="https://player.vimeo.com/video/1078777376?background=1&loop=1&muted=1&quality=1080p&title=0&byline=0"
+                    frameborder="0"
+                    allowfullscreen
+                    allow="autoplay; fullscreen; picture-in-picture"
+                    playsinline
+                    webkit-playsinline
+                    muted>
+                </iframe>
+        </div>
+
+        <div class="content-container">
+            <div class="header-container">
+                <h1>cursive</h1>
+                <div class="profile-image-container">
+                  <img id="profile-image" src="clueless.png" alt="Profile Image">
+                </div>
+              </div>
+            <h2 class="fade-up"><h2><span id="auto-type"></span></h2>
+            <div class="social-icons fade-up">
+                <a href="https://steamcommunity.com/id/exerlie/" class="icon steam" target="_blank" rel="noopener noreferrer">
+                    <img src="stim-icon.png" alt="Steam">
+                </a>
+                <a href="https://i.imgur.com/rNG5AHp.png" class="icon neon-white" target="_blank" rel="noopener noreferrer">
+                    <img src="onlyFans-icon.png" alt="OnlyFans">
+                </a>
+            </div>
+        </div>
+        
+        <!-- Volume Control with Slider -->
+        <div class="volume-control">
+            <button id="sound-toggle" class="sound-button">
+                <i id="sound-icon" class="fas fa-volume-mute"></i>
+            </button>
+            <input type="range" min="0" max="1" step="0.01" value="0.5" id="volume-slider" class="volume-slider">
+        </div>
+
+        <!-- View Counter -->
+        <div class="view-counter">
+            <span id="hit-count"></span>
+        </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
