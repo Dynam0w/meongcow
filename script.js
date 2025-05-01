@@ -49,6 +49,23 @@ document.addEventListener('DOMContentLoaded', () => {
         player.pause().catch(error => {
             console.error("Error pausing video:", error);
         });
+
+        // Special fix for Safari on iOS
+        if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
+        // Force view counter visibility on Safari
+        setTimeout(function() {
+        updateViewCount();
+      
+      // Additional force visibility
+      const viewCounterDiv = document.querySelector('.view-counter');
+      if (viewCounterDiv) {
+        viewCounterDiv.style.display = "flex !important";
+        viewCounterDiv.style.visibility = "visible !important";
+        viewCounterDiv.style.opacity = "1 !important";
+        viewCounterDiv.style.zIndex = "999999 !important";
+      }
+    }, 2000);
+  }
     }
 
     // Initialize player
@@ -59,44 +76,84 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateViewCount() {
         const counterElement = document.getElementById('hit-count');
         if (!counterElement) return;
-      
+        
         // Clear previous content
         counterElement.innerHTML = '';
-      
-        // Create container
+        
+        // Create container with improved Safari support
         const container = document.createElement('div');
         container.style.display = 'flex';
         container.style.alignItems = 'center';
-      
-        // Create image
+        container.style.justifyContent = 'center';
+        container.style.webkitTransform = 'translateZ(0)';
+        container.style.transform = 'translateZ(0)';
+        
+        // Create image with Safari-specific optimizations
         const viewCounterImg = document.createElement('img');
         viewCounterImg.src = "https://views-counter.vercel.app/badge?pageId=exerlie%2Exyz&leftColor=000000&rightColor=000000&type=total&label=%F0%9F%91%81&style=none";
         viewCounterImg.alt = "views";
-        viewCounterImg.style.height = "20px";
+        viewCounterImg.style.height = "22px";
         viewCounterImg.style.display = "inline-block";
         viewCounterImg.style.visibility = "visible";
         viewCounterImg.style.opacity = "1";
-      
-        // Append image to container, and container to counter
+        viewCounterImg.style.webkitTransform = 'translateZ(0)';
+        viewCounterImg.style.transform = 'translateZ(0)';
+        
+        // Force load complete event
+        viewCounterImg.onload = function() {
+          forceVisibility();
+        };
+        
+        // Also set a timeout as fallback
+        setTimeout(forceVisibility, 1000);
+        
+        // Append elements
         container.appendChild(viewCounterImg);
         counterElement.appendChild(container);
-      
-        // Force parent visibility
-        const viewCounterDiv = document.querySelector('.view-counter');
-        if (viewCounterDiv) {
-          viewCounterDiv.style.display = "flex";
-          viewCounterDiv.style.visibility = "visible";
-          viewCounterDiv.style.opacity = "1";
-          viewCounterDiv.style.zIndex = "99999";
-        }
-      
-        // Ensure styles on mobile
-        if (window.innerWidth <= 767) {
-          viewCounterImg.style.height = "22px";
+        
+        // Force parent visibility with Safari fixes
+        forceVisibility();
+        
+        // Function to ensure visibility on all browsers including Safari
+        function forceVisibility() {
+          const viewCounterDiv = document.querySelector('.view-counter');
           if (viewCounterDiv) {
-            viewCounterDiv.style.zIndex = "99999";
-            viewCounterDiv.style.bottom = "20px";
-            viewCounterDiv.style.left = "10px";
+            viewCounterDiv.style.display = "flex";
+            viewCounterDiv.style.visibility = "visible";
+            viewCounterDiv.style.opacity = "1";
+            viewCounterDiv.style.zIndex = "999999";
+            viewCounterDiv.style.webkitTransform = 'translateZ(0)';
+            viewCounterDiv.style.transform = 'translateZ(0)';
+            
+            // Safari-specific fixes
+            viewCounterDiv.style.webkitBackfaceVisibility = "hidden";
+            viewCounterDiv.style.backfaceVisibility = "hidden";
+            viewCounterDiv.style.willChange = "transform, opacity";
+          }
+          
+          // Ensure the counter element is visible
+          counterElement.style.display = "flex";
+          counterElement.style.visibility = "visible";
+          counterElement.style.opacity = "1";
+          
+          // Ensure the image is visible
+          if (viewCounterImg) {
+            viewCounterImg.style.display = "inline-block";
+            viewCounterImg.style.visibility = "visible";
+            viewCounterImg.style.opacity = "1";
+          }
+          
+          // Mobile-specific adjustments
+          if (isMobileDevice()) {
+            if (viewCounterDiv) {
+              viewCounterDiv.style.background = "rgba(0,0,0,0.95)";
+              viewCounterDiv.style.padding = "6px 14px";
+              viewCounterDiv.style.bottom = "20px";
+              viewCounterDiv.style.left = "10px";
+            }
+            if (viewCounterImg) {
+              viewCounterImg.style.height = "24px";
+            }
           }
         }
       }
