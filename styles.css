@@ -307,21 +307,6 @@ h2 {
     transform: translateZ(0);
   }
   
-  @media (max-width: 767px) {
-    .view-counter {
-      bottom: 20px !important;
-      left: 10px !important;
-      padding: 6px 14px !important;
-      z-index: 999999 !important;
-      background: rgb(0, 0, 0) !important;
-      -webkit-transform: translateZ(0) !important;
-      transform: translateZ(0) !important;
-    }
-    
-    #hit-count img {
-      height: 24px !important;
-    }
-  }
 
 /* Fade-up animation for elements */
 .fade-up {
