@@ -58,66 +58,48 @@ document.addEventListener('DOMContentLoaded', () => {
     // Function to update view count
     function updateViewCount() {
         const counterElement = document.getElementById('hit-count');
-
-        if (!counterElement) {
-            console.error("Counter element not found");
-            return;
-        }
-
+        if (!counterElement) return;
+      
+        // Clear previous content
         counterElement.innerHTML = '';
-
-        // Create a container for better control
+      
+        // Create container
         const container = document.createElement('div');
         container.style.display = 'flex';
         container.style.alignItems = 'center';
-
-        // Create and configure the image
+      
+        // Create image
         const viewCounterImg = document.createElement('img');
         viewCounterImg.src = "https://views-counter.vercel.app/badge?pageId=exerlie%2Exyz&leftColor=000000&rightColor=000000&type=total&label=%F0%9F%91%81&style=none";
         viewCounterImg.alt = "views";
-        viewCounterImg.style.display = "block";
-        viewCounterImg.style.maxWidth = "100%";
-
-        // Mobile-specific styling
-        if (isMobileDevice()) {
-            viewCounterImg.style.height = "20px";
-            viewCounterImg.style.display = "inline-block";
-            viewCounterImg.style.visibility = "visible";
-            viewCounterImg.style.opacity = "1";
-
-            // Force parent elements to be visible
-            counterElement.style.display = "block";
-            counterElement.style.visibility = "visible";
-            counterElement.style.opacity = "1";
-
-            document.querySelector('.view-counter').style.display = "flex";
-            document.querySelector('.view-counter').style.visibility = "visible";
-            document.querySelector('.view-counter').style.opacity = "1";
-        }
-
+        viewCounterImg.style.height = "20px";
+        viewCounterImg.style.display = "inline-block";
+        viewCounterImg.style.visibility = "visible";
+        viewCounterImg.style.opacity = "1";
+      
+        // Append image to container, and container to counter
         container.appendChild(viewCounterImg);
         counterElement.appendChild(container);
-
-        // Force a refresh of the counter after a short delay
-        setTimeout(() => {
-            if (viewCounterImg.complete) {
-                // Image already loaded, make sure it's visible
-                forceVisibility();
-            } else {
-                // Wait for image to load then make visible
-                viewCounterImg.onload = forceVisibility;
-            }
-        }, 500);
-
-        function forceVisibility() {
-            viewCounterImg.style.display = "inline-block";
-            viewCounterImg.style.visibility = "visible";
-            viewCounterImg.style.opacity = "1";
-            container.style.display = "flex";
-            counterElement.style.display = "block";
-            document.querySelector('.view-counter').style.display = "flex";
+      
+        // Force parent visibility
+        const viewCounterDiv = document.querySelector('.view-counter');
+        if (viewCounterDiv) {
+          viewCounterDiv.style.display = "flex";
+          viewCounterDiv.style.visibility = "visible";
+          viewCounterDiv.style.opacity = "1";
+          viewCounterDiv.style.zIndex = "99999";
         }
-    }
+      
+        // Ensure styles on mobile
+        if (window.innerWidth <= 767) {
+          viewCounterImg.style.height = "22px";
+          if (viewCounterDiv) {
+            viewCounterDiv.style.zIndex = "99999";
+            viewCounterDiv.style.bottom = "20px";
+            viewCounterDiv.style.left = "10px";
+          }
+        }
+      }
 
     // Check if on mobile device
     function isMobileDevice() {
