@@ -206,10 +206,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function initTyped() {
         typed = new Typed('#auto-type', {
             strings: [
-                "diddy ruined meek mill",
+                "diam jap",
+                "ahah ah ahha",
                 "hi <img src='peepo.gif' style='height:1em;vertical-align:middle;'>",
-                "bonjour",
-                "i love kanye"
+                "are u bele?"
             ],
             typeSpeed: 130,
             backSpeed: 130,
