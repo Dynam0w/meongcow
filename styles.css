@@ -38,15 +38,15 @@ h1, .social-icons .icon img {
 
 .header-container {
     display: flex;
-    flex-direction: row-reverse; /* This will reverse the order */
+    flex-direction: row-reverse;
     align-items: center;
     justify-content: center;
     gap: 20px;
 }
 
 .profile-image-container {
-    width: 65px; /* Adjust size as needed */
-    height: 65px; /* Adjust size as needed */
+    width: 65px;
+    height: 65px;
     border-radius: 0%;
     overflow: hidden;
 }
@@ -58,7 +58,7 @@ h1, .social-icons .icon img {
 }
 
 h1 {
-    margin: 0; /* Remove default margin to align properly with the image */
+    margin: 0;
 }
 
 #landing-page {
@@ -78,6 +78,7 @@ h1 {
     font-size: 2rem;
     color: #fff;
     font-weight: 700;
+    pointer-events: none;
 }
 
 #content-page {
@@ -99,8 +100,19 @@ h1 {
     height: 100%;
     overflow: hidden;
     z-index: -1;
+    /* Add your background image here - Change 'your-background-image.jpg' to your actual image filename */
+    background-image: url('shit.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: #000;
     opacity: 0;
-    transition: opacity 1s ease-in-out;
+    transition: opacity 1s ease-in-out, background-image 0.5s ease-out;
+}
+
+/* Remove background when video is playing */
+.video-background.video-playing {
+    background-image: none !important;
 }
 
 .video-background.active {
@@ -111,16 +123,16 @@ h1 {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 120vw; /* Increased from 100vw to zoom in */
-    height: 120vh; /* Increased from 100vh to zoom in */
+    width: 120vw;
+    height: 120vh;
     transform: translateX(-50%) translateY(-50%);
     pointer-events: none;
 }
 
 @media (max-width: 767px) {
     .video-background iframe {
-        width: 330vw; /* More zoom on mobile */
-        height: 330vh; /* More zoom on mobile */
+        width: 330vw;
+        height: 330vh;
     }
 }
 
@@ -199,8 +211,7 @@ h1 {
 }
 
 .hidden {
-    opacity: 0;
-    pointer-events: none;
+    display: none !important;
 }
 
 .content-container {
@@ -251,7 +262,6 @@ h2 {
     filter: brightness(1.2);
 }
 
-/* Add this specific style for the Steam icon */
 .icon.steam img {
     width: 42px;
     height: 42px;
@@ -273,7 +283,6 @@ h2 {
     z-index: 10;
 }
     
-/* Remove view counter background on mobile */
 @media (max-width: 767px) {
     .view-counter {
         background-color: transparent !important;
