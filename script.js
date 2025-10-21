@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
         counterElement.innerHTML = '';
         
         const viewCounterImg = document.createElement('img');
-        viewCounterImg.src = "https://views-counter.vercel.app/badge?pageId=cursive%2Elol&leftColor=000000&rightColor=000000&type=total&label=%F0%9F%91%81&style=none";
+        viewCounterImg.src = "https://views-counter.vercel.app/badge?pageId=exerlie%2Exyz&leftColor=000000&rightColor=000000&type=total&label=%F0%9F%91%81&style=none";
         viewCounterImg.alt = "views";
         counterElement.appendChild(viewCounterImg);
     }
@@ -305,3 +305,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
     titleTypingEffect();
 });
+
